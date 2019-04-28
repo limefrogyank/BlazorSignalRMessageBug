@@ -1,0 +1,38 @@
+﻿@page "/"
+@inject IJSRuntime JSRuntime;
+
+<button onclick=@OnClick>Get Data</button>
+<input bind=@count/>
+
+@if (mainViewModel != null)
+{
+    <ol>
+        @foreach (var item in mainViewModel.Data)
+        {
+            <li>@item</li>
+        }
+    </ol>
+}
+
+@functions { 
+    int count = 10;
+    MainViewModel mainViewModel;
+
+    protected override Task OnAfterRenderAsync()
+    {
+        if (mainViewModel == null)
+        {
+            mainViewModel = new MainViewModel(JSRuntime);
+
+        }
+
+        return base.OnAfterRenderAsync();
+    }
+
+    async Task OnClick(UIMouseEventArgs args)
+    {
+        await mainViewModel.LoadDataAsync(count);
+        StateHasChanged();
+
+    }
+}
